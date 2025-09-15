@@ -1,0 +1,41 @@
+#cloud-config
+users:
+  - name: shibegora
+    groups: sudo
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ${vms_ssh_root_key}
+package_update: true
+package_upgrade: false
+packages:
+  - vim
+  - wget
+  - python3-pip
+write_files:
+  - path: /root/.ssh/id_ed25519
+    permissions: '0600'
+    owner: root:root
+    content: |
+      ${ssh_private_key}
+
+  - path: /tmp/inventory.ini
+    permissions: '0755'
+    content: |
+      ${inventory_content}
+        
+  - path: /root/init.sh
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      HOMEYAK=/home/shibegora
+      cp /root/.ssh/id_ed25519 $HOMEYAK/.ssh/
+      chown shibegora: $HOMEYAK/.ssh/id_ed25519
+      chmod 600 $HOMEYAK/.ssh/id_ed25519
+      apt purge -y motd-news-config
+      rm -f /etc/update-motd.d/*
+      # scp $(terraform output -json master_vm_details | jq -r '.[0].ext_ip_address'):/home/shibegora/.kube/config ~/.kube/
+      # sed -i "s/127\.0\.0\.1/$(terraform output -json master_vm_details | jq -r '.[0].ext_ip_address')/" ~/.kube/config
+runcmd:
+  - timedatectl set-timezone Europe/Moscow
+  - /root/init.sh

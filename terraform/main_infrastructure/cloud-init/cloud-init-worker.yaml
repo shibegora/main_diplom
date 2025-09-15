@@ -1,0 +1,23 @@
+#cloud-config
+users:
+  - name: shibegora
+    groups: sudo
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ${vms_ssh_root_key}
+package_update: true
+package_upgrade: false
+packages:
+  - vim
+  - wget
+write_files:
+  - path: /root/init.sh
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      apt purge -y motd-news-config
+      rm -f /etc/update-motd.d/*
+runcmd:
+  - timedatectl set-timezone Europe/Moscow
+  - /root/init.sh
