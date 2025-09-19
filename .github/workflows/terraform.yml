@@ -46,7 +46,7 @@ jobs:
 
       - name: Write Yandex Cloud SA key        
         run: |
-          cat <<EOF > terraform-key.json
+          cat <<EOF > key.json
           ${{ secrets.YC_SA_KEY }}
           EOF
 
