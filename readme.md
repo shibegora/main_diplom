@@ -1,11 +1,11 @@
 # Создание облачной инфраструктуры
 ## 1. Сервисный аккаунт и bucket
 В Яндекс Облаке при помощи Terraform создал сервис-аккаунт и назначил необходимые права
-![alt text](image.png)
+![alt text](image/image.png)
 
 а так-же создал bucket на 1ГБ
 
-![alt text](image1.png)
+![alt text](image/image1.png)
 
 В дальнейшем сгенерил terraform-key.json сервисного аккаунта, который буду использовать для аутентификации при подготовке инфраструктуры.
 
@@ -15,7 +15,7 @@
 В Яндекс Облаке при помощи Terraform было поднято
 
 VPC c подсетями public и private
-![alt text](image-2.png)
+![alt text](image/image-2.png)
 
 5 виртуальных машин
 
@@ -27,21 +27,21 @@ VPC c подсетями public и private
 
 Начальная конфигурация операционной системы на разных виртуальных машинах проходила через индивидуальный cloud-init
 
-![alt text](image-3.png)
+![alt text](image/image-3.png)
 
 Так-же была создана таблица маршрутов из private на nat-instance для получения трафика виртуальным машинам в зоне private
 
-![alt text](image-4.png)
+![alt text](image/image-4.png)
 
 Был создан Network Load Balancer и listener с targetport:30080
 
 В target-group добавил worker-nodes
 
-![alt text](image-5.png)
+![alt text](image/image-5.png)
 
 После применения кода, файл terraform.tfstate улетает в созданный ранее bucket
 
-![alt text](image-6.png)
+![alt text](image/image-6.png)
 
 Ссылка на код: https://github.com/shibegora/main_diplom/tree/main/terraform/main_infrastructure
 
@@ -62,24 +62,24 @@ pip install -r ~/kubespray/requirements.txt
 
 Одна мастер-нода, три воркер-ноды
 
-![alt text](image-7.png)
+![alt text](image/image-7.png)
 
 Ожидание составило почти 13 минут
 
-![alt text](image-8.png)
+![alt text](image/image-8.png)
 
 kubectl с ноутбука отрабатывает:
 
-![alt text](image-9.png)
+![alt text](image/image-9.png)
 
-![alt text](image-10.png)
+![alt text](image/image-10.png)
 
 # Создание тестового приложения
 Собрал docker образ тестового приложения и поместил его в DockerHub
 
-![alt text](image-11.png)
+![alt text](image/image-11.png)
 
-![alt text](image-12.png)
+![alt text](image/image-12.png)
 
 Ссылка на dockerhub: https://hub.docker.com/repository/docker/shibegora/diploma_app/tags/1.0.0/sha256-c4f0f1d9ff9998f0c73473658e8e9f053cf460304204dfe7e29d59654ca05714
 
@@ -106,9 +106,9 @@ helm upgrade --install kube-prometheus prometheus-community/kube-prometheus-stac
 
 Gragana доступна по адресу: http://51.250.44.216/grafana
 
-![alt text](image-13.png)
+![alt text](image/image-13.png)
 
-![alt text](image-14.png)
+![alt text](image/image-14.png)
 
 ## Тестовое приложение
 Запускаем манифест из склонированного ранее репозитория
@@ -117,7 +117,7 @@ kubectl apply -f app_all_in_one.yml
 
 Тестовое приложение доступно по адресу: http://51.250.44.216/app
 
-![alt text](image-15.png)
+![alt text](image/image-15.png)
 
 ## CI/CD-terraform
 Создал workflow в GitHub Actions, который при любом пуше в main запускает пайплайн
@@ -126,18 +126,18 @@ kubectl apply -f app_all_in_one.yml
 
 Как видно пайплайн прошел успешно
 
-![alt text](image-16.png)
+![alt text](image/image-16.png)
 
 Для проверки, поменял размер ОЗУ на nat instance с 2 до 3 гб. Как видно, ВМ остановилась:
 
-![alt text](image-17.png)
+![alt text](image/image-17.png)
 
 И запустилась уже с 3 гб ОЗУ:
 
-![alt text](image-18.png)
+![alt text](image/image-18.png)
 
 Все измнения прошли за 1.2 минуты:
-![alt text](image-19.png)
+![alt text](image/image-19.png)
 
 # Установка и настройка CI/CD
 В репозитории с тестовым приложением создал workflow в GitHub Actions, который при любом пуше в main запускает пайплайн где со бирает образ приложения и отправляет его в DockerHub
@@ -151,38 +151,38 @@ kubectl apply -f app_all_in_one.yml
 ## Демонстрация работы
 Внес изменения в репозитории и сделал пуш без тага
 
-![alt text](image-20.png)
+![alt text](image/image-20.png)
 
 Как видим запустился пайплайн
 
-![alt text](image-21.png)
+![alt text](image/image-21.png)
 
 Который завершился успешно, но не попал в деплой
 
-![alt text](image-22.png)
+![alt text](image/image-22.png)
 
 Теперь внес изменения в репозитории и сделал пуш с тагом
 
 Для наглядности внес изменение в страничку со статичными данными. Записал туда версию приложения, которую укажу в таге: 1.0.14
 
-![alt text](image-23.png)
+![alt text](image/image-23.png)
 
-![alt text](image-24.png)
+![alt text](image/image-24.png)
 
 Как видим пайплайн прошел успешно и приложение задеплоилось в кластер
 
-![alt text](image-25.png)
+![alt text](image/image-25.png)
 
-![alt text](image-26.png)
+![alt text](image/image-26.png)
 
 Образ используемый для переразворачивания ВМ так же изменился:
 
-![alt text](image-27.png)
+![alt text](image/image-27.png)
 
 Версия приложения так же поменялась:
 
-![alt text](image-28.png)
+![alt text](image/image-28.png)
 
 А в Dockerhub залетел используемый образ:
 
-![alt text](image-29.png)
+![alt text](image/image-29.png)
