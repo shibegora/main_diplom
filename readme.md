@@ -119,3 +119,70 @@ kubectl apply -f app_all_in_one.yml
 
 ![alt text](image-15.png)
 
+## CI/CD-terraform
+Создал workflow в GitHub Actions, который при любом пуше в main запускает пайплайн
+
+Сам Workflow: https://github.com/shibegora/main_diplom/blob/main/.github/workflows/terraform.yml
+
+Как видно пайплайн прошел успешно
+
+![alt text](image-16.png)
+
+Для проверки, поменял размер ОЗУ на nat instance с 2 до 3 гб. Как видно, ВМ остановилась:
+
+![alt text](image-17.png)
+
+И запустилась уже с 3 гб ОЗУ:
+
+![alt text](image-18.png)
+
+Все измнения прошли за 1.2 минуты:
+![alt text](image-19.png)
+
+# Установка и настройка CI/CD
+В репозитории с тестовым приложением создал workflow в GitHub Actions, который при любом пуше в main запускает пайплайн где со бирает образ приложения и отправляет его в DockerHub
+
+А так-же если пуш происходит с тегом, приложение деплоится в кубернетес кластер
+
+Сам Workflow: https://github.com/shibegora/test_app_k8s/blob/main/.github/workflows/deploy.yaml
+
+Репозиторий с тестовым приложением: https://github.com/shibegora/test_app_k8s
+
+## Демонстрация работы
+Внес изменения в репозитории и сделал пуш без тага
+
+![alt text](image-20.png)
+
+Как видим запустился пайплайн
+
+![alt text](image-21.png)
+
+Который завершился успешно, но не попал в деплой
+
+![alt text](image-22.png)
+
+Теперь внес изменения в репозитории и сделал пуш с тагом
+
+Для наглядности внес изменение в страничку со статичными данными. Записал туда версию приложения, которую укажу в таге: 1.0.14
+
+![alt text](image-23.png)
+
+![alt text](image-24.png)
+
+Как видим пайплайн прошел успешно и приложение задеплоилось в кластер
+
+![alt text](image-25.png)
+
+![alt text](image-26.png)
+
+Образ используемый для переразворачивания ВМ так же изменился:
+
+![alt text](image-27.png)
+
+Версия приложения так же поменялась:
+
+![alt text](image-28.png)
+
+А в Dockerhub залетел используемый образ:
+
+![alt text](image-29.png)
